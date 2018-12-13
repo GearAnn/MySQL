@@ -1,0 +1,31 @@
+
+Navicat:用于连接数据库，界面只能简单操作数据库，比如：不能用于连表操作，
+        但是在查询中可以输入SQL语句进行复杂操作。
+
+Navicat中注释语句是在语句前加 ‘--’  例如：  -- select * from a
+
+
+1、数据库的导入和导出：Navicat可以界面操作导出表结构，不包含数据；也可以导出结构和数据。
+
+  SQL文件导出语句：
+         mysqldump -u用户名 -p密码 数据库名字 > 导出文件路径      # 导出结构+数据
+         mysqldump -u用户名 -p密码 -d 数据库名字 > 导出文件路径   # 只导出结构
+
+  SQL数据入库语句：
+         mysqldump -u用户名 -p密码 数据库名字 < 文件路径
+
+
+2、Python的模块管理网站： pypi.python.org
+
+  在Python3中，自带了pip3命令，可以用于安装模块： pip3 install xxxx(模块名)
+
+  还有其他安装模块的命令
+  比如：yum install xxx
+       apt-get install xxx
+       brew installl xxx
+       easyinstall xxx
+
+  注意：在使用 pip3 install 安装模块的时候，要注意环境变量，模块是安装在Scripts里面的
+  C:\Users\Administrator\AppData\Local\Programs\Python\Python37\Scripts
+
+3、Pycharm 安装上 pymysql模块，也可以是 mysqldb ,但是一般用 pymysql

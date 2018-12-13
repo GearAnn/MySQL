@@ -1,0 +1,306 @@
+
+一、数据库管理系统DBMS
+   MySQL就是一个DBMS软件之一，用来管理文件数据。
+   MySQL的特点：
+      1.InnoDB引擎，是可以通过原子操作（即整体操作）进行回滚，来支持事务。
+      2.Pycharm利用pip3 install pymysql 来操作MySQL
+
+   数据管理系统满足的基本需求就是：
+   1.把程序运行和数据本身分离开，
+   2.可以通过软件远程操作数据，存放数据等。
+
+   写程序：
+       a.数据库在本地
+            1.找到目录
+            2.添加数据
+
+       b.数据库在其他远程设备上
+            1.socket接连上远程设备
+            2.通过socket发送命令
+
+二、数据管理系统软件的设计：
+     A.执行程序，socket客户端
+     B.数据存放，socket服务端
+     C.制作一套操作规则
+     D.socket服务端和客户端的用户认证，赋予授权和限制功能。
+
+有人就制作了这些满足用户数据管理需求的软件：MySQL(有免费版，有收费版),SqlSevers(微软开发，收费)，Orecal（收费），Sqlit,access等
+基本上大部分DBMS都是通过socket来连接，所以不同的数据库管理软件之间的差别就是在操作规则的不同！！！
+而我们学习的主要内容就是 MySQL 的操作规则！！
+
+
+三、MySQL数据库
+
+1.基本概念
+    数据库：就是文件夹
+    数据库表：就是文件 (例如excel表格等)  注意：MySQL中文件的格式和excel一样，也是行列表格的形式。
+    数据行：文件中的一行数据
+    数据列：文件中的一列数据
+
+
+2.基本命令
+
+启动服务器：net start mysql
+
+客户端连接: mysql -u root -p
+
+
+show database   # 查看当前MySQL根目录的文件夹
+
+creat table 表名（nid int,name varchar(20),pwd varchar(64)） # 创建数据表
+
+creat database 数据库名   # 创建数据库文件夹
+
+use 数据库名   # 进入数据库：
+
+show tables  # 显示当前数据库（文件夹）里的数据表（文件）
+
+insert into 表名（nid,name,pwd） values(1,'Alex','123')  # 插入数据,前面的（）里的title和后面（）里的value值是一一对应的
+
+select * from 表名  # 查看文件的所有内容
+
+select * from title名 from 表名  # 查看表某一行/列的信息
+
+
+3.用户创建命令
+
+creat user '用户名' @ 'IP地址' identified by '密码'   # 创建用户
+
+set password for '用户名' @ 'IP地址' = Password('新密码')  #  修改密码
+
+drop user '用户名' @ 'IP地址'   # 删除用户
+
+rename user '用户名' @ ‘IP地址’；to '新用户名' @ ‘IP地址’  # 变更用户
+
+注意：新创建的用户默认为无法查看root文件，没有任何权限
+
+
+4.授权管理（由root账户操作）
+
+show grans for '用户'@‘IP地址’   # 查看权限
+
+grant 权限关键字 on 数据库、表 to '用户'@'IP地址'    # 授权
+
+revoke 权限关键字 on 数据库、表 to '用户'@'IP地址'    # 取消权限
+
+权限关键字：
+select   # 仅查看 ;
+select,insert  # 查看并插入数据
+all privilege  # 除授权以外的所以权限
+
+授权IP地址：
+ ‘用户名‘ @ ’IP地址‘        # 用户只能在指定的IP下访问
+ ’用户名‘ @ ’192.168.1.%‘  # 用户只能在指定的IP段下访问（通配符%表示任意）
+ ’用户名‘ @ ’%‘            # 用户可以在任意IP下访问（默认IP地址为%）
+
+
+===========重要环节，远程连接========
+
+客户端连接（MySQL提供的客户端）
+mysql -u root -h 192.168.1.1 -p     （注意：-h：主机 -p:端口，默认3306）
+   # 输入密码
+
+==================================
+
+
+5.SQL语句
+
+    数据库级别：
+        show database
+
+        creat database 数据库名称 default charset utf8 collate utf8_general_ci
+
+        use 数据库名字
+
+        drop database 数据库名字
+
+    表级别：
+        show tables
+
+        desc 表名    # 看表的描述
+
+        creat table 表名（nid int,name varchar(10)）
+
+        drop table 表名   # 删除表
+
+        delete from 表名  # 清空表内容
+
+        truncate table 表名  # 清空表内容
+
+        select * from 表名 # 查询表所以的数据
+
+    数据行级别：
+        # 查询 select
+            select * from 表名(列名 类型 是否可以为空)Engine=InnoDB Default Charset=utf8
+
+            是否可以为空：用null(空) , not null（不为空） 　
+
+        # 增加/插入数据 insert
+            insert into 表名(name,age) values('alex',18);
+            insert into 表名(name,age) values('alex',18),('bob',20);
+
+            # 把A表的某列某行数据插入B表
+                insert into B表名(name,age) select caption,gender from A表；
+
+        # 附近条件的操作 where
+            delect from 表名 where name='alex';
+            delect from 表名 where name='alex' and/or nid=3
+            delect from 表名 where age>5 ;
+
+        # 改 update
+            update 表名 set age=2
+            update 表名 set age=3 where nid>12
+
+        # 包含 in/not in
+            select * from 表名 where age in/not in(20,35);
+            select * from 表名 where age in/not in(select nid from 表名);
+
+        # 通配符
+            select * from 表名 where name like 'ale%';   # 查询ale开头的所有字符
+
+        # 限制 limit （可以用于分页）
+            select * from 表名 limit 5;           # 查前5行
+            select * from 表名 limit 4,10;        # 查第4行后面的10行
+            select * from 表名 limit 10 offset 4  # 查第4行后面的10行  （2种写法）
+
+        # 排序 order by
+            select * from 表名 order by 列名 asc            # 把列从小到大排
+            select * from 表名 order by 列名 desc           # 把列从大到小排
+            select * from 表名 order by 列1 desc,列2 asc    # 把列1从大到小排，再把相同列2从小到大排
+            # 注意：asc-从小到大， desc-从大到小
+
+        # 分组 group by  (多用于统计人数)
+            select * from 表名 group by 部门名;                 # 把表按照部门名来分组
+
+            select 部门名,max/min(序列名) from 表名 group by 部门名
+            # 把表按照部门名来分组,然后赋予部门名序号，序号按照分组前最大/最小的序号来标注
+
+            # 分组求和 sum
+               select name,sum(grades) from 表名 gourp by course    # 按名字分组后分数求和
+
+            # 分组统计 count
+               select 部门名,count(部门代号) from 表名 group by 部门名  # 统计部门代号的总人数
+
+            # 注意 group by 必须在where之后，order之前
+
+        # 组合 union
+            select name from A表名 union select name from B表名       # 2个表相同的信息重和
+
+            select name from A表名 union all select name from B表名   # 2个表相同的信息不重合
+
+        # 连表操作
+            select * from A表,b表 where A表.X列名 = B表.Y列名   # 把A表的X列和B表的Y列一一对应，组合成1个表
+
+            # left join on, inner join
+                select * from A表 left join B表 on A表.X列名 = B表.Y列名
+                # 注意：1.join on 与 where 的功能一样，写法不一样，但是在where中写在前面的表是主表
+                       2.A left join B ,A是主表； A right join B , B是主表
+                       3.inner join不会出现null
+
+
+
+    关键概念：
+        默认值default:
+            例如 creat table 表名(nid int not null default 2, num int not null)   # nind int不为空,不输入值时默认为2
+
+        自增列:   # 自增列后面必须加主键索引key
+            auto_increment 即：插入的数据自动增加一个数或者几个数，例如：
+             creat table tb1(nid int not null auto_increment primary key,grades int)engine=InnoDB Default charset=utf8;
+
+             insert into tb1(grades) values(100)
+
+             这时每插入一行，nid 就会 +1
+
+        主键(key)索引:
+              一张表只能有一个key，唯一不重复，不能为null,一般情况下自增列设置key  # 可以多列同时组成主键索引，但组合也是唯一不重复
+
+                创建key列 ： create table xxx(nid .... primarykey,...)  # 参考上面自增列
+
+        唯一索引（列）：
+            可以为null，一张表可以有多个唯一列,可以添加索引加速查找
+
+        外键(foreign key):
+            表示表与表之间的联系。给一张表增加外键，就是让一张表与另外一张表建立联系。例如：A表中的某列某列的X信息由B表来标注。
+            SQL语句:
+               alter table A表名 add constraint fk1 foreign key A表名（Y列名） references B表名（X列名）
+               # A表Y列的信息 可参考 B表X列中的信息,其中 fk1 是外键名。即，A表添加了一个外键fk1,参考是B表。
+
+             删除外键：alter table 表名 drop foreign key 外键名
+
+
+    修改表：
+        添加列：alter table 表名 add 列名 类型
+        删除列：alter table 表名 drop colum 列名
+        修改列：
+            alter table 表名 modify column 列名 类型 --类型
+            alter table 表名 change 原列表 新列名 类型; --列名，类型
+
+        添加主键：alter table 表名 add primary key(列名)；
+        删除主键：alter table 表名 modify 列名 int,drop primary key;
+
+        修改默认值：alter table 表名 alter 列名 set default 1000;
+        删除默认值：alter table 表名 alter 列名 drop default;
+
+
+6.MySQL基本数据类型：大致分为字符串，时间，数值（这2个最重要）
+
+    数值：
+        二进制：bit
+
+        整数类型：int,samlint,tinyint,bigint ; 不同的int的长度不一样，即取值范围不一样
+
+        小数类型：
+            decimal:最精确的数据类型，精确到数字的每一位
+
+            double：次要精确的数据类型，如果数字过大，会省略后面的位数
+
+            float：最不精确的数据类型，如果数字过大，省略的位数最多
+
+    字符串：
+        char:定长   例如： char(7) 表示 数据固定长度为7个字符
+        # 数据长度固定，浪费空间，但查找速度快，因为搜索可以直接跳过无用的固定的数据长度
+
+        vachar:变长  例如：vachar(5) 表示 数据最大长度为5个字符
+        # 数据长度根据具体数据变化(最大255字符)，节省空间，但查找速度放慢，因为搜索无法跳过变长的数据
+
+        text:文本  # 数据长度很大
+        mediumtext # 数据长度更大
+        longtext   # 数据长度最大
+
+    二进制数据：
+        Blob,TinyBlob,MediumBlob,LongBlob
+        # 多数用于上传文件中的数据，以强制二进制的方式存储
+        # 多数用于文件以其他数据类型保存在数据库，但文件路径（如'D:\abc.PFD'）可以由Blob来保存，避免写入数据库
+
+    时间类型：
+        date  # 格式： YYYY-MM-DD (如'2008-11-06')
+
+        time  # 格式： HH:YY:KK  (如'23:56:51')
+
+        datetime  # 格式：YYYY-MMM-DD HH:SS:BB (如‘2009-10-01 23:00:51’)
+
+        timestamp  # 格式：YYYYMMDD HHMMSS （如‘20180105 060536’）
+
+    enum 枚举类型：
+        # 创建枚举
+        create table clothes_site(name vachar(40),size enum('x','s'.'xl','l'));
+        insert into clothes(name,site) values('3','x'),('5','xl')
+        # 结论：在枚举创建后，插入数据只能插入枚举目录里面，否则报错
+
+    set 集合类型：
+        # 创建集合
+        creat table myset(color set('W','R','G'));
+        insert into myset(color) values('W,R'),('W,G'),('R,G')；
+        # 结论：集合中的目录可以任意组合，插入数据
+
+
+
+
+
+
+
+
+
+
+
+

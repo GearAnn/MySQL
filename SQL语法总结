@@ -1,0 +1,24 @@
+
+
+总结重点：
+
+    1、增删改查
+
+    2、分组：group by, having聚合条件
+
+    3、分业：select...limit 3,5 = select ...limit 5 offset 3
+
+    4、连表：left join on ，inner join , where
+          # 表1 left join 表2 on  , 表1为主表
+
+    5、排序：order by ... asc/desc
+          # asc   从小到大
+          # desc  从大到小
+
+    6、组合：union
+
+    7、条件：
+        # 大于小于: > <
+        # in/not in (...) , in/not in (select 列名 from 表名)
+
+    8、外键： foreign key
